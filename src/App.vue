@@ -13,9 +13,7 @@ import MsgDesigner from "./components/message-designer/MsgDesigner";
 export default {
   name: "App",
   components: {
-    // HelloWorld,
-    MsgDesigner,
-    // TooltipIcon
+    MsgDesigner
   }
 };
 </script>

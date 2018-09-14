@@ -2952,6 +2952,10 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
+javascript-detect-element-resize@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/javascript-detect-element-resize/-/javascript-detect-element-resize-0.5.3.tgz#1a71cd51dfe565907f299012fe73a294104025de"
+
 js-base64@^2.1.8:
   version "2.4.9"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.4.9.tgz#748911fb04f48a60c4771b375cac45a80df11c03"
@@ -3168,6 +3172,10 @@ lodash.uniq@^4.5.0:
 lodash@^4.0.0, lodash@^4.17.5, lodash@^4.3.0, lodash@~4.17.10:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
+
+lodash@^4.16.1:
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
 
 lodash@^4.17.4:
   version "4.17.4"
@@ -5706,9 +5714,22 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+"vue-collapsible@https://github.com/madebydavid/vue-collapsible.git#fix/class-property":
+  version "2.0.0"
+  resolved "https://github.com/madebydavid/vue-collapsible.git#9b0f0af549dcc9f54575637e6374ca48616cda2c"
+  dependencies:
+    vue-mixins "github:voronianski/vue-mixins"
+
 vue-hot-reload-api@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.0.tgz#97976142405d13d8efae154749e88c4e358cf926"
+
+"vue-mixins@github:voronianski/vue-mixins":
+  version "0.3.6"
+  resolved "https://codeload.github.com/voronianski/vue-mixins/tar.gz/7f5d4becd692bca5ad7ef2993fc860f3b57a7b8c"
+  dependencies:
+    javascript-detect-element-resize "^0.5.3"
+    lodash "^4.16.1"
 
 vue-resize@^0.4.3:
   version "0.4.4"
@@ -5729,7 +5750,7 @@ vue-template-es2015-compiler@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.6.0.tgz#dc42697133302ce3017524356a6c61b7b69b4a18"
 
-vue@^2.5.17:
+vue@^2.5.13:
   version "2.5.17"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
 

@@ -1,63 +1,114 @@
 import { getField, updateField } from 'vuex-map-fields'
+import attachmentButton from './attachmentButton'
 
 // Initial State
 const state = {
-	attachments: []
+  attachment: {
+    id: 0,
+    content: {
+      title: '',
+      fallback: '',
+      callback_id: '',
+      pretext: '',
+      text: '',
+      color: '#000000',
+      actions: []
+    }
+  },
+  nextActionID: '0'
 }
 
 /********************
  * Getters
- * 
- * name: (state, getters, rootState) => (...arguments) => {}
+ *
+ * name: (state, getters, rootState) => (...arguments) => { return }
  ********************/
 const getters = {
-	getField
+  getField,
+  localAttach: (state) => {
+    return state.attachment
+  },
+
+  // fullAttach: (state) => {
+  //   return state.attachment
+  // },
+
+  getActionByID: (state, getters) => id => {
+    return getters.localAttach.content.actions.find(action => action.id === id)
+  },
 }
 
 /********************
  * Mutations
- * 
+ *
  * name (state, payload) {}
  ********************/
 const mutations = {
-	updateField,
-	newAttachment(state, attachment) {
-		newAttachment = {
-			// Use callback as ID.
-			title: "",
-			fallback: "",
-			callback: "",
-			pretext: "",
-			text: "",
-			color: ""
-		}
-	},
+  updateField,
+  loadAttachment (state, attachment) {
+    state.attachment = attachment
+  },
 
-	saveMessage(state, message) {
-		const index = state.messages.findIndex(msg => msg.id === message.id)
-		state.messages[index] = message
-	},
+  /*  Button Mutations  */
+  initButton (state) {
+    const newButton = {
+      id: state.nextActionID,
+      content: {
+        name: '',
+        text: '',
+        type: 'button',
+        value: '',
+        style: ''
+      }
+    }
+    state.attachment.content.actions.push(newButton)
+  },
 
-	updateMessage(state, message) {
-		state.curMessage = message
-	}
+  saveActionByID (state, action) {
+    let actions = state.attachment.content.actions
+    let index = actions.findIndex(act => act.id === action.id)
+    actions[index] = action
+    console.log("Action " + index + " updated")
+  },
+
+  incNextActionID (state) {
+    state.nextActionID++
+  }
 }
 
-// Actions
+/********************
+ * Actions
+ *
+ * Uses destructured arguments
+ * name ({state, commit, getters, rootGetters}, payload) {}
+ ********************/
 const actions = {
-	new ({ state, commit }) {
+  saveAttachment ({state, commit} ) {
+    commit('msgDesigner/saveAttachByID', state.attachment , { root: true })
+    console.log("Saved Attachment to Message")
+  },
 
-	},
+  newButton ({state, commit}) {
+    commit('initButton')
+    commit('incNextActionID')
+  },
 
-	save({ state, commit }, message) {
-		commit('saveMessage', message)
-	}
+  setActiveButton ({ state, commit, getters }, id) {
+    let newButton = getters.getActionByID(id)
+    commit('msgDesigner/msgAttachment/attachmentButton/loadButton', newButton, { root: true })
+  }
+}
+
+// Modules
+const modules = {
+  attachmentButton
 }
 
 export default {
-	namespaced: false,
-	state,
-	getters,
-	actions,
-	mutations
+  namespaced: true,
+  state,
+  getters,
+  actions,
+  mutations,
+  modules
 }
