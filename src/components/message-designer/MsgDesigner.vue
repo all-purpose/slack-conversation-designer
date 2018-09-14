@@ -17,8 +17,10 @@
       <h1>Attachments</h1>
       <Collapsible accordion>
         <CollapsibleItem v-for="(attach, index) in message.attachments" :key="attach.id" :ref="'attachAI' + index" is-opened>
-          <h4 slot="header" @click="setActiveAttach(attach.id)">Attachment {{index + 1}}</h4>
-          <MsgAttachment v-on:save_attach="updateAttach($event)"/>
+          <h4 slot="header">Attachment {{index + 1}}</h4>
+          <MsgAttachment 
+            :data="passAttach(attach.id)"
+            v-on:upd-attach="updateAttach($event)"/>
         </CollapsibleItem>
       </Collapsible>
       <button type="button" @click="newAttachment">Add Attachment</button>
@@ -35,7 +37,7 @@
       </div>
 		</form>
     <h1 class="c-msd-des-title">JSON Data:</h1>
-    <pre>{{ JSON.stringify(prettyJson, null, 4) }}</pre>
+    <pre>{{ JSON.stringify(message, null, 4) }}</pre>
 	</section>
 </template>
 
@@ -48,15 +50,13 @@ import MsgAttachment from "./MsgAttachment";
 export default {
   name: "MsgDesigner",
   computed: {
-    ...mapState({
-      // message: state => state.msgDesigner.curMessage
-      }),
+    ...mapState({}),
     ...mapGetters("msgDesigner", {
       message: "localMessage",
-      id: "localMsgID",
       isChanged: "msgChanged",
       isNew: "msgNew",
-      prettyJson: "formattedMessage"
+      prettyJson: "formattedMessage",
+      passAttach: "getAttachByID"
     }),
     ...mapFields('msgDesigner', [
       "curMessage.content.text",
@@ -86,8 +86,7 @@ export default {
     }),
     ...mapActions("msgDesigner", {
       newMessage: "newMsg",
-      newAttachment: "newAttach",
-      setActiveAttach: "setActiveAttachment"
+      newAttachment: "newAttach"
     })
   },
   components: { 

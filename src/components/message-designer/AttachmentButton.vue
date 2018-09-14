@@ -2,19 +2,19 @@
 	<fieldset class="c-msg-button-cont">
 		<!-- <legend class="c-msg-button-title">{{ name }} Button</legend> -->
 		<label>Name: <span class="c-msg-des-desc">Shared name of the group of buttons</span></label>
-		<input name="name" type="text" v-model="name" @focusout="$emit('update_button', buttonData)">
+		<input name="name" type="text" v-model="name" @input="$emit('update_button', buttonData)">
 		<label>Text: <span class="c-msg-des-desc">Text displayed on the button.</span></label>
-		<input name="text" type="text" v-model="text" @focusout="saveButton">
+		<input name="text" type="text" v-model="text" @input="$emit('update_button', buttonData)">
 		<label>Value: <span class="c-msg-des-desc">The value the code sees.</span></label>
-		<input name="value" type="text" v-model="value" @focusout="saveButton">
+		<input name="value" type="text" v-model="value" @input="$emit('update_button', buttonData)">
 		<label>Style: <span class="c-msg-des-desc">How the button looks.</span></label>
-		<select v-model="style" @focusout="saveButton">
+		<select v-model="style" @input="$emit('update_button', buttonData)">
 			<option value="default">Default</option>
 			<option value="primary">Primary</option>
 			<option value="danger">Danger</option>
 		</select>
 		<label>Confirm: <span class="c-msg-des-desc">Show a confirmation dialog when this button is pressed.</span></label>
-		<input name="confirm" type="checkbox" @focusout="saveButton">
+		<input name="confirm" type="checkbox" @input="$emit('update_button', buttonData)">
 	</fieldset>
 </template>
 
@@ -25,6 +25,10 @@ import { mapFields } from "vuex-map-fields"
 
 export default {
   name: "AttachmentButton",
+	props: ['data'],
+	created: function () {
+		this.loadButton(this.data)
+	},
   computed: {
     ...mapState({}),
     ...mapGetters("msgDesigner/msgAttachment/attachmentButton", {
@@ -45,9 +49,7 @@ export default {
 		...mapMutations("msgDesigner/msgAttachment/attachmentButton", {
       loadButton: "loadButton"
     }),
-    ...mapActions("msgDesigner/msgAttachment/attachmentButton", {
-			saveButton: "saveButton"
-		})
+    ...mapActions("msgDesigner/msgAttachment/attachmentButton", {})
 	},
 };
 </script>

@@ -1,26 +1,27 @@
 <template>
 	<fieldset class="c-msg-attach-cont">
 		<label>Fallback: <span class="c-msg-des-desc">A message displayed when attachments aren't supported.</span></label>
-		<input name="fallback" type="text" v-model="fallback" :focusout="$emit('save_attach',localAttachment)">
+		<input name="fallback" type="text" v-model="fallback" @input="$emit('upd-attach',localAttachment)">
 		<label>Callback ID: <span class="c-msg-des-desc">Unique identifier for message buttons.</span></label>
-		<input name="callback_id" type="text" v-model="callback_id" :focusout="saveAttach">
+		<input name="callback_id" type="text" v-model="callback_id" @input="$emit('upd-attach',localAttachment)">
 		<label>Pretext: <span class="c-msg-des-desc">text appearing before attachment.</span></label>
-		<input name="pretext" type="text" v-model="pretext" :focusout="saveAttach">
+		<input name="pretext" type="text" v-model="pretext" @input="$emit('upd-attach',localAttachment)">
 		<label>Title: <span class="c-msg-des-desc">A visual header for the attachment.</span></label>
-		<input name="title" type="text" v-model="title" :focusout="saveAttach">
+		<input name="title" type="text" v-model="title" @input="$emit('upd-attach',localAttachment)">
 		<label>Text: <span class="c-msg-des-desc">text content of the attachment itself.</span></label>
-		<input name="text" type="text" v-model="text" :focusout="saveAttach">
+		<input name="text" type="text" v-model="text" @input="$emit('upd-attach',localAttachment)">
 		<label>Color: <span class="c-msg-des-desc">Color of the attachments left-side vertical bar.</span></label>
-		<input name="color" type="color" v-model="color" :focusout="saveAttach">
+		<input name="color" type="color" v-model="color" @input="$emit('upd-attach',localAttachment)">
 		<!--================
 		====  Actions   ====
 		=================-->
 		<h3 class="c-msg-action-header">Actions</h3>
 		<Collapsible accordion>
 			<CollapsibleItem v-for="(action, index) in localAttachment.content.actions"  :key="action.id" :ref="'actAI' + index" is-opened>
-				<h4 slot="header" @click="setActiveButton(action.id)">{{ action.content.text }} Button</h4>
-				<AttachmentButton v-on:update_button="updateAction($event)"/>
-				<!-- <AttachmentButton v-for="(action, index) in localAttachment.actions"  :key="action.id"/> -->
+				<h4 slot="header">{{ action.content.text }} Button</h4>
+				<AttachmentButton 
+					:data="passAction(action.id)"
+					v-on:update_button="updateAction($event)"/>
 			</CollapsibleItem>
 		</Collapsible>
 		<button type="button" class="c-msg-button" @click="newButton">Add Buttons</button>
@@ -36,10 +37,12 @@ import AttachmentButton from "./AttachmentButton"
 
 export default {
   name: "MsgAttachment",
+	props: ['data'],
   computed: {
     ...mapState({}),
     ...mapGetters("msgDesigner/msgAttachment", {
 			localAttachment: "localAttach",
+			passAction: "getActionByID"
 			// ind: "localAttachInd"
     }),
     ...mapFields('msgDesigner/msgAttachment', [
@@ -51,20 +54,23 @@ export default {
 			"attachment.content.color"
     ])
   },
-	// created: function () {
-
-	// },
+	created: function () {
+		this.loadAttachment(this.data)
+	},
 	methods: {
 		...mapMutations("msgDesigner/msgAttachment", {
       // newButton: "initButton",
 			updateID: "setAttachID",
-			updateAction: "saveActionByID"
+			saveAction: "saveActionByID",
+			loadAttachment: "loadAttachment"
     }),
     ...mapActions("msgDesigner/msgAttachment", {
-			saveAttach: "saveAttachment",
-			newButton: "newButton",
-			setActiveButton: "setActiveButton"
-		})
+			newButton: "newButton"
+		}),
+		updateAction: function (event) {
+			this.saveAction(event)
+			this.$emit('upd-attach', this.localAttachment)
+		}
 	},
   components: {
     AttachmentButton,

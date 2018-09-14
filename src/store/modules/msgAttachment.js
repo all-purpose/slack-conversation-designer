@@ -29,10 +29,6 @@ const getters = {
     return state.attachment
   },
 
-  // fullAttach: (state) => {
-  //   return state.attachment
-  // },
-
   getActionByID: (state, getters) => id => {
     return getters.localAttach.content.actions.find(action => action.id === id)
   },
@@ -68,7 +64,6 @@ const mutations = {
     let actions = state.attachment.content.actions
     let index = actions.findIndex(act => act.id === action.id)
     actions[index] = action
-    console.log("Action " + index + " updated")
   },
 
   incNextActionID (state) {
@@ -83,19 +78,9 @@ const mutations = {
  * name ({state, commit, getters, rootGetters}, payload) {}
  ********************/
 const actions = {
-  saveAttachment ({state, commit} ) {
-    commit('msgDesigner/saveAttachByID', state.attachment , { root: true })
-    console.log("Saved Attachment to Message")
-  },
-
   newButton ({state, commit}) {
     commit('initButton')
     commit('incNextActionID')
-  },
-
-  setActiveButton ({ state, commit, getters }, id) {
-    let newButton = getters.getActionByID(id)
-    commit('msgDesigner/msgAttachment/attachmentButton/loadButton', newButton, { root: true })
   }
 }
 

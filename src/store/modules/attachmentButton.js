@@ -44,13 +44,7 @@ const mutations = {
  * Uses destructured arguments
  * name ({state, commit, getters, rootGetters}, payload) {}
  ********************/
-const actions = {
-  saveButton ({state, commit, dispatch, rootGetters}) {
-    // $emit('update-button', state.button)
-    commit('msgDesigner/msgAttachment/saveActionByID', state.button, { root: true })
-    // dispatch('msgDesigner/msgAttachment/saveAttachment', rootGetters['msgDesigner/msgAttachment/fullAttach'], { root: true })
-  }
-}
+const actions = {}
 
 export default {
   namespaced: true,

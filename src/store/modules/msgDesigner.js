@@ -45,10 +45,6 @@ const getters = {
     return getters.localMessage.attachments.find(attach => attach.id === id)
   },
 
-  localMsgID: (state, getters) => {
-    return state.curMessage.id
-  },
-
   msgChanged: (state, getters) => {
     return state.msgChanged
   },
@@ -57,21 +53,21 @@ const getters = {
     return state.msgNew
   },
 
-  formattedMessage: (state) => {
-    let json = state.curMessage.content
-    if (json.attachments && json.attachments.length > 0) {
-      json.attachments = json.attachments.map((attachment) => {
-        let newAttach = attachment.content
-        if (newAttach.actions && newAttach.actions.length > 0) {
-          newAttach.actions = newAttach.actions.map((action) => {
-            return action.content
-          })
-        }
-        return newAttach
-      })
-    } 
-    return json
-  }
+  // formattedMessage: (state) => {
+  //   let json = state.curMessage.content
+  //   if (json.attachments && json.attachments.length > 0) {
+  //     json.attachments = json.attachments.map((attachment) => {
+  //       let newAttach = attachment.content
+  //       if (newAttach.actions && newAttach.actions.length > 0) {
+  //         newAttach.actions = newAttach.actions.map((action) => {
+  //           return action.content
+  //         })
+  //       }
+  //       return newAttach
+  //     })
+  //   } 
+  //   return json
+  // }
 }
 
 /********************
@@ -122,7 +118,7 @@ const mutations = {
 
   /* ***  Attachment Mutations  *** */
   initAttachment (state) {
-    const newAttachment = {
+    let blankAttachment = [{
       id: state.nextAttachID,
       content: {
         title: '',
@@ -133,15 +129,14 @@ const mutations = {
         color: '#000000',
         actions: []
       }
-    }
-    state.curMessage.content.attachments.push(newAttachment)
+    }]
+    state.curMessage.content.attachments = state.curMessage.content.attachments.concat(blankAttachment)
   },
 
   saveAttachByID (state, attachment) {
     let attachments = state.curMessage.content.attachments
     let index = attachments.findIndex(attach => attach.id === attachment.id)
     attachments[index] = attachment
-    console.log("Attachment " + index + " updated")
   },
 
   incNextAttachID (state) {
@@ -173,11 +168,6 @@ const actions = {
   newAttach({ state, commit }) {
     commit('initAttachment')
     commit('incNextAttachID')
-  },
-
-  setActiveAttachment ({ commit, getters }, id) {
-    let activeAttachment = getters.getAttachByID(id)
-    commit('msgDesigner/msgAttachment/loadAttachment', activeAttachment, { root: true })
   }
 }
 
