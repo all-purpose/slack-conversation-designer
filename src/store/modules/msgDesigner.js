@@ -1,16 +1,16 @@
 import { getField, updateField } from 'vuex-map-fields'
-import msgAttachment from './MsgAttachment'
+// import msgAttachment from './MsgAttachment'
 
 /* **** Filter Objects  **** */
-Object.filter = (obj, predicate) => 
+Object.filter = (obj, predicate) =>
   Object.assign(...Object.keys(obj)
-    .filter( key => predicate(obj[key]) )
-    .map( key => ({ [key]: obj[key] }) ) );
+    .filter(key => predicate(obj[ key ]))
+    .map(key => ({ [ key ]: obj[ key ] })))
 
 // Initial State
 const state = {
   curMessage: {
-    id: '',
+    id: 0,
     content: {
       text: '',
       response_type: 'in_channel',
@@ -21,7 +21,7 @@ const state = {
   },
   msgNew: true,
   msgChanged: false,
-  messages: [],
+  // messages: [],
   nextMessageID: 0,
   nextAttachID: 0
 }
@@ -51,23 +51,7 @@ const getters = {
 
   msgNew: (state, getters) => {
     return state.msgNew
-  },
-
-  // formattedMessage: (state) => {
-  //   let json = state.curMessage.content
-  //   if (json.attachments && json.attachments.length > 0) {
-  //     json.attachments = json.attachments.map((attachment) => {
-  //       let newAttach = attachment.content
-  //       if (newAttach.actions && newAttach.actions.length > 0) {
-  //         newAttach.actions = newAttach.actions.map((action) => {
-  //           return action.content
-  //         })
-  //       }
-  //       return newAttach
-  //     })
-  //   } 
-  //   return json
-  // }
+  }
 }
 
 /********************
@@ -78,6 +62,10 @@ const getters = {
 const mutations = {
   updateField,
   /* ***  Message Mutations  *** */
+  loadMsg (state, message) {
+    state.curMessage = message
+  },
+
   resetFields (state) {
     const blankFields = {
       id: state.nextMessageID,
@@ -112,31 +100,41 @@ const mutations = {
     if (index === '-1') {
       state.messages.push(message)
     } else {
-      state.messages[index] = message
+      state.messages[ index ] = message
     }
   },
 
   /* ***  Attachment Mutations  *** */
   initAttachment (state) {
-    let blankAttachment = [{
+    let blankAttachment = [ {
       id: state.nextAttachID,
       content: {
-        title: '',
         fallback: '',
+        color: '#000000',
         callback_id: '',
         pretext: '',
+        author_name: '',
+        author_link: '',
+        author_icon: '',
+        title: '',
+        title_link: '',
         text: '',
-        color: '#000000',
+        fields: [],
+        image_url: '',
+        thumb_url: '',
+        footer: '',
+        footer_icon: '',
+        ts: '',
         actions: []
       }
-    }]
+    } ]
     state.curMessage.content.attachments = state.curMessage.content.attachments.concat(blankAttachment)
   },
 
   saveAttachByID (state, attachment) {
     let attachments = state.curMessage.content.attachments
     let index = attachments.findIndex(attach => attach.id === attachment.id)
-    attachments[index] = attachment
+    attachments[ index ] = attachment
   },
 
   incNextAttachID (state) {
@@ -165,22 +163,22 @@ const actions = {
     commit('saveMessage', state.curMessage)
   },
 
-  newAttach({ state, commit }) {
+  newAttach ({ state, commit }) {
     commit('initAttachment')
     commit('incNextAttachID')
   }
 }
 
 // Modules
-const modules = {
-  msgAttachment
-}
+// const modules = {
+//   msgAttachment
+// }
 
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations,
-  modules
+  mutations//, 
+  // modules
 }

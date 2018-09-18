@@ -2,27 +2,17 @@ import { getField, updateField } from 'vuex-map-fields'
 
 // Initial State
 const state = {
-  button: {
-    id: 0,
-    content: {
-      name: '',
-      text: '',
-      type: 'button',
-      value: '',
-      style: ''
-    }
-  }
 }
 
 /********************
  * Getters
  *
- * name: (state, getters, rootState) => (...arguments) => { return }
+ * name: (state, getters, rootState) => (...arguments) => {}
  ********************/
 const getters = {
   getField,
-  localButton: (state) => {
-    return state.button
+  getMessage: (state, getters, rootState, rootGetters) => {
+    return rootGetters[ 'msgDesigner/localMessage' ]
   }
 }
 
@@ -32,10 +22,7 @@ const getters = {
  * name (state, payload) {}
  ********************/
 const mutations = {
-  updateField,
-  loadButton(state, button) {
-    state.button = button
-  }
+  updateField
 }
 
 /********************
@@ -44,7 +31,13 @@ const mutations = {
  * Uses destructured arguments
  * name ({state, commit, getters, rootGetters}, payload) {}
  ********************/
-const actions = {}
+const actions = {
+}
+
+// Modules
+// const modules = {
+//   msgAttachment
+// }
 
 export default {
   namespaced: true,

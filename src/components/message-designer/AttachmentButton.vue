@@ -31,10 +31,10 @@ export default {
 	},
   computed: {
     ...mapState({}),
-    ...mapGetters("msgDesigner/msgAttachment/attachmentButton", {
+    ...mapGetters("attachmentButton", {
 			buttonData: "localButton"
 		}),
-    ...mapFields('msgDesigner/msgAttachment/attachmentButton', [
+    ...mapFields('attachmentButton', [
       "button.content.name",
 			"button.content.text",
 			"button.content.type",
@@ -46,10 +46,10 @@ export default {
   //   ButtonConfirm
   // },
 	methods: {
-		...mapMutations("msgDesigner/msgAttachment/attachmentButton", {
+		...mapMutations("attachmentButton", {
       loadButton: "loadButton"
     }),
-    ...mapActions("msgDesigner/msgAttachment/attachmentButton", {})
+    ...mapActions("attachmentButton", {})
 	},
 };
 </script>

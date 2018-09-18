@@ -1,17 +1,27 @@
 import { getField, updateField } from 'vuex-map-fields'
-import attachmentButton from './attachmentButton'
+// import attachmentButton from './attachmentButton'
 
 // Initial State
 const state = {
   attachment: {
     id: 0,
     content: {
-      title: '',
       fallback: '',
+      color: '#000000',
       callback_id: '',
       pretext: '',
+      author_name: '',
+      author_link: '',
+      author_icon: '',
+      title: '',
+      title_link: '',
       text: '',
-      color: '#000000',
+      fields: [],
+      image_url: '',
+      thumb_url: '',
+      footer: '',
+      footer_icon: '',
+      ts: '',
       actions: []
     }
   },
@@ -31,7 +41,7 @@ const getters = {
 
   getActionByID: (state, getters) => id => {
     return getters.localAttach.content.actions.find(action => action.id === id)
-  },
+  }
 }
 
 /********************
@@ -63,7 +73,7 @@ const mutations = {
   saveActionByID (state, action) {
     let actions = state.attachment.content.actions
     let index = actions.findIndex(act => act.id === action.id)
-    actions[index] = action
+    actions[ index ] = action
   },
 
   incNextActionID (state) {
@@ -78,22 +88,22 @@ const mutations = {
  * name ({state, commit, getters, rootGetters}, payload) {}
  ********************/
 const actions = {
-  newButton ({state, commit}) {
+  newButton ({ state, commit }) {
     commit('initButton')
     commit('incNextActionID')
   }
 }
 
 // Modules
-const modules = {
-  attachmentButton
-}
+// const modules = {
+//   attachmentButton
+// }
 
 export default {
   namespaced: true,
   state,
   getters,
   actions,
-  mutations,
-  modules
+  mutations//, 
+  // modules
 }

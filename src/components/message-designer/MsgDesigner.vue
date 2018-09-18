@@ -33,11 +33,14 @@
 			<input name="delete_original" type="checkbox" v-model="delete_original" />
       <div>
         <button type="button" @click="newMessage" :disabled="isNew && !isChanged">New Message</button>
-        <button type="button" :disabled="!isChanged">Save Message</button>
+        <button 
+          type="button"
+          @click="$emit('save-msg', message)"
+          :disabled="!isChanged">Save Message</button>
       </div>
 		</form>
-    <h1 class="c-msd-des-title">JSON Data:</h1>
-    <pre>{{ JSON.stringify(message, null, 4) }}</pre>
+    <!-- <h1 class="c-msd-des-title">JSON Data:</h1>
+    <pre>{{ JSON.stringify(prettyJson, null, 4) }}</pre> -->
 	</section>
 </template>
 
@@ -55,7 +58,7 @@ export default {
       message: "localMessage",
       isChanged: "msgChanged",
       isNew: "msgNew",
-      prettyJson: "formattedMessage",
+      // prettyJson: "formattedMessage",
       passAttach: "getAttachByID"
     }),
     ...mapFields('msgDesigner', [
@@ -85,8 +88,11 @@ export default {
       updateAttach: "saveAttachByID"
     }),
     ...mapActions("msgDesigner", {
-      newMessage: "newMsg",
+      // newMessage: "newMsg",
       newAttachment: "newAttach"
+    }),
+    ...mapActions({
+      newMessage: "newMessage"
     })
   },
   components: { 
