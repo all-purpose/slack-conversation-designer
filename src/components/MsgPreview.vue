@@ -32,83 +32,79 @@
             </span>
           </div>
         </div>
-        <span class="message_body">{{message.text.length > 0 ? message.text : 'Your message text'}}
+        <span class="message_body">{{message.text.length ? message.text : 'Your message text'}}
           <template v-for="attachment of message.attachments">
-            <div class="attachment_pretext for_attachment_group " v-if="attachment.content.pretext.length> 0">{{attachment.content.pretext}}</div>
-            <div class="attachment_group has_border">
+            <div class="attachment_pretext for_attachment_group" v-if="attachment.content.pretext.length> 0" :key="attachment.id">{{attachment.content.pretext}}</div>
+            <div class="attachment_group has_border" :key="attachment.id">
               <div class="inline_attachment can_delete" data-attachment-id="1">
                 <div class="msg_inline_attachment_column column_border" :style="'background-color:' + attachment.content.color +';'">
                 </div>
                 <div class="msg_inline_attachment_column column_content">
                   <div class="msg_inline_attachment_row attachment_flush_text attachment_source">
+                    <span class="attachment_source_icon">
+                      <a :href="attachment.content.author_link" rel="noreferrer" target="_blank"><img class="attachment_source_icon" :src="attachment.content.author_icon" alt=""></a>
+                    </span>
                     <span class="attachment_source_name">
-                      <a href="http://flickr.com/bobby/" rel="noreferrer" target="_blank">Bobby Tables</a>
+                      <a :href="attachment.content.author_link" rel="noreferrer" target="_blank">{{attachment.content.author_name}}</a>
                     </span>
                   </div>
                   <div class="msg_inline_attachment_row attachment_flush_text">
-                    <div class="attachment_title">
-                      <a href="https://api.slack.com/" target="_blank">
-                        Slack API Documentation</a>
+                    <div class="attachment_title" v-if="attachment.content.title.length">
+                      <a :href="attachment.content.title_link" target="_blank">
+                        {{attachment.content.title}}</a>
                     </div>
-                    Optional text that appears within the attachment
+                    {{attachment.content.text.length && attachment.content.text}}
                   </div>
-                  <div class="msg_inline_attachment_row attachment_flush_text attachment_fields">
+                  <!-- ====================
+                    Fields 
+                  ==================== -->
+                  <div class="msg_inline_attachment_row attachment_flush_text attachment_fields" v-if="attachment.content.fields.length">
                     <table class="" cellpadding="0" cellspacing="0" border="0" align="left">
                       <tbody>
-                        <tr>
-                          <td valign="top" colspan="1" width="250">
-                            <div class="attachment_field_title no_jumbomoji">Priority</div>
-                            <i class="copy_only">----------------<br></i>
-                            <div class="attachment_field_value no_jumbomoji short">High
-                              <i class="copy_only"><br><br></i>
-                            </div>
-                          </td>
-                          <td valign="top" colspan="1">
-                            <div class="attachment_field_title no_jumbomoji">Priority</div>
-                            <i class="copy_only">----------------<br></i>
-                            <div class="attachment_field_value no_jumbomoji short">High
-                              <i class="copy_only"><br><br></i>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td valign="top" colspan="1" width="250">
-                            <div class="attachment_field_title no_jumbomoji">Priority</div>
-                            <i class="copy_only">----------------<br></i>
-                            <div class="attachment_field_value no_jumbomoji short">High
-                              <i class="copy_only"><br><br></i>
-                            </div>
-                          </td>
-                          <td valign="top" colspan="1">
-                            <div class="attachment_field_title no_jumbomoji">Priority</div>
-                            <i class="copy_only">----------------<br></i>
-                            <div class="attachment_field_value no_jumbomoji short">High
-                              <i class="copy_only"><br><br></i>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td valign="top" colspan="2">
-                            <div class="attachment_field_title no_jumbomoji">Priority</div>
-                            <i class="copy_only">----------------<br></i>
-                            <div class="attachment_field_value no_jumbomoji ">High
-                              <i class="copy_only"><br><br></i>
-                            </div>
-                          </td>
-                        </tr>
+                        <template v-for="(field, index) of attachment.content.fields">
+                          <!-- Full Width Field Start -->
+                          <template v-if="!field.short || (!attachment.content.fields[index + 1].short && !attachment.content.fields[index - 1].short)">
+                            <tr>
+                              <td valign="top" colspan="2">
+                          </template>
+                          <!-- Left Short Field Start-->
+                          <template v-else-if="attachment.content.fields[index + 1].short">
+                            <tr>
+                              <td valign="top" colspan="1" width="250">
+                          </template>
+                          <!-- Right Short Field Start -->
+                          <template v-else-if="attachment.content.fields[index - 1].short">
+                            <td valign="top" colspan="1">
+                          </template>
+                          <!-- Field Content -->
+                          <div class="attachment_field_title no_jumbomoji">{{field.title}}</div>
+                          <i class="copy_only">----------------<br></i>
+                          <div class="attachment_field_value no_jumbomoji ">{{field.value}}
+                            <i class="copy_only"><br><br></i>
+                          </div>
+                          <!-- Left Short Field End-->
+                          <template v-if="attachment.content.fields[index + 1].short">
+                            </td>
+                          </template>
+                          <!-- Other Field Ends-->
+                          <template v-if="attachment.content.fields[index + 1].short">
+                            </td>
+                            </tr>
+                          </template>
+                        </template>
                       </tbody>
                     </table>
                   </div>
                   <div class="msg_inline_attachment_row attachment_flush_text attachment_footer">
                     <span class="attachment_footer_text">
-                      <span class="attachment_footer_icon"><img src="https://slack-imgs.com/?c=1&amp;o1=wi16.he16.si&amp;url=https%3A%2F%2Fplatform.slack-edge.com%2Fimg%2Fdefault_application_icon.png" srcset="https://slack-imgs.com/?c=1&amp;o1=wi16.he16.si&amp;url=https%3A%2F%2Fplatform.slack-edge.com%2Fimg%2Fdefault_application_icon.png 1x, https://slack-imgs.com/?c=1&amp;o1=wi32.he32.si&amp;url=https%3A%2F%2Fplatform.slack-edge.com%2Fimg%2Fdefault_application_icon.png 2x" alt=""></span>Slack API</span>
+                      <span class="attachment_footer_icon" v-if="attachment.content.footer_icon.length"><img :src="attachment.content.footer_icon" alt=""></span>{{attachment.content.footer}}</span>
                     <span class="attachment_ts">Nov 29th, 1973 at 1:33 PM</span>
                   </div>
                   <div class="msg_inline_attachment_row attachment_actions">
                     <div class="attachment_actions_interactions">
                       <span class="attachment_actions_interactions_inner_wrapper">
-                        <button class="btn btn_attachment" data-action-id="1" data-qa="button-game" title="Chess">
-                          <span class="btn_attachment_text overflow_ellipsis">Chess</span>
+                        <button :class="'btn btn_attachment ' + action.content.style" v-for="(action, index) in attachment.content.actions" :key="'button' + action.id" v-if="action.content.type === 'button'" :data-action-id="index" :data-qa="'button-' + action.content.name" :title="action.content.text">
+                          <span class="btn_attachment_text overflow_ellipsis">{{action.content.name}}</span>
                         </button>
                         <button class="btn btn_attachment" data-action-id="2" data-qa="button-game" title="Falken's Maze">
                           <span class="btn_attachment_text overflow_ellipsis">Falken's Maze</span>
@@ -120,6 +116,7 @@
                     </div>
                   </div>
                 </div>
+                <!-- TODO: Delete attachment on click -->
                 <div class="delete_attachment_link" data-attachment-id="1">
                   <div class="ts-icon ts_icon_times_small"></div>
                 </div>
@@ -138,6 +135,9 @@
 import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
 export default {
   name: "MsgPreview",
+  data: {
+    field_short_ind: 0
+  },
   computed: {
     ...mapGetters("msgPreview", {
       message: "getMessage"
