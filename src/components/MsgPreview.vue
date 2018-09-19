@@ -34,30 +34,40 @@
         </div>
         <span class="message_body">{{message.text.length ? message.text : 'Your message text'}}
           <template v-for="attachment of message.attachments">
-            <div class="attachment_pretext for_attachment_group" v-if="attachment.content.pretext.length> 0" :key="attachment.id">{{attachment.content.pretext}}</div>
-            <div class="attachment_group has_border" :key="attachment.id">
-              <div class="inline_attachment can_delete" data-attachment-id="1">
+            <div class="attachment_pretext for_attachment_group" v-if="attachment.content.pretext.length" :key="'previewPretext' + attachment.id">{{attachment.content.pretext}}</div>
+            <div class="attachment_group has_border" :key="'previewAttachment' + attachment.id">
+              <div :class="attachment.content.thumb_url.length && !attachment.content.image_url.length ? 'inline_attachment has_thumb' : 'inline_attachment can_delete'" data-attachment-id="1">
                 <div class="msg_inline_attachment_column column_border" :style="'background-color:' + attachment.content.color +';'">
                 </div>
                 <div class="msg_inline_attachment_column column_content">
-                  <div class="msg_inline_attachment_row attachment_flush_text attachment_source">
+                  <!-- ===================
+                  ====  SOURCE / AUTHOR
+                  ==================== -->
+                  <div class="msg_inline_attachment_row attachment_flush_text attachment_source" v-if="attachment.content.author_name.length">
                     <span class="attachment_source_icon">
-                      <a :href="attachment.content.author_link" rel="noreferrer" target="_blank"><img class="attachment_source_icon" :src="attachment.content.author_icon" alt=""></a>
+                      <a :href="attachment.content.author_link" rel="noreferrer" target="_blank" :style="'background-image:url(\'' + attachment.content.author_icon + '\');background-size:cover;background-position:center center;'"></a>
                     </span>
                     <span class="attachment_source_name">
-                      <a :href="attachment.content.author_link" rel="noreferrer" target="_blank">{{attachment.content.author_name}}</a>
+                      <a v-if="attachment.content.author_link.length" :href="attachment.content.author_link" rel="noreferrer" target="_blank">{{attachment.content.author_name}}</a>
+                      <template v-else>{{attachment.content.author_name}}</template>
                     </span>
                   </div>
+                  <!-- ===================
+                  ====  TITLE & TEXT
+                  ==================== -->
                   <div class="msg_inline_attachment_row attachment_flush_text">
                     <div class="attachment_title" v-if="attachment.content.title.length">
-                      <a :href="attachment.content.title_link" target="_blank">
+                      <a :href="attachment.content.title_link" target="_blank" v-if="attachment.content.title_link.length">
                         {{attachment.content.title}}</a>
+                      <template v-else>{{attachment.content.title}}</template>
                     </div>
-                    {{attachment.content.text.length && attachment.content.text}}
+                    <template v-if="attachment.content.text.length">
+                      {{attachment.content.text}}
+                    </template>
                   </div>
-                  <!-- ====================
-                    Fields 
-                  ==================== -->
+                  <!-- ===================
+                    ====  FIELDS
+                    ==================== -->
                   <div class="msg_inline_attachment_row attachment_flush_text attachment_fields" v-if="attachment.content.fields.length">
                     <table class="" cellpadding="0" cellspacing="0" border="0" align="left">
                       <tbody>
@@ -95,29 +105,55 @@
                       </tbody>
                     </table>
                   </div>
+                  <!-- ===================
+                  ====  FOOTER
+                  ==================== -->
                   <div class="msg_inline_attachment_row attachment_flush_text attachment_footer">
                     <span class="attachment_footer_text">
                       <span class="attachment_footer_icon" v-if="attachment.content.footer_icon.length"><img :src="attachment.content.footer_icon" alt=""></span>{{attachment.content.footer}}</span>
-                    <span class="attachment_ts">Nov 29th, 1973 at 1:33 PM</span>
+                    <!-- <span class="attachment_ts">Nov 29th, 1973 at 1:33 PM</span> -->
                   </div>
+                  <!-- ===================
+                  ====  IMAGE
+                  ==================== -->
+                  <div class="msg_inline_attachment_row attachment_media" v-if="attachment.content.image_url.length">
+                    <div class="clear_both msg_inline_img_holder msg_inline_holder msg_inline_holder_rounded file_container_fixed_dimensions" style="opacity: 1;">
+                      <a :href="attachment.content.image_url" rel="noreferrer" target="_blank" title="" class="file_viewer_external_link">
+                        <div class="msg_inline_img_container">
+                          <div class="file_preview_preserve_aspect_ratio" style="width: 400px; height: 251px;">
+                            <figure class="msg_inline_img msg_inline_child" :style="'background-image:url(' + attachment.content.image_url + '\');'"><img :src="attachment.content.image_url"></figure>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  <!-- ===================
+                    ====  ACTIONS
+                    ==================== -->
                   <div class="msg_inline_attachment_row attachment_actions">
                     <div class="attachment_actions_interactions">
                       <span class="attachment_actions_interactions_inner_wrapper">
-                        <button :class="'btn btn_attachment ' + action.content.style" v-for="(action, index) in attachment.content.actions" :key="'button' + action.id" v-if="action.content.type === 'button'" :data-action-id="index" :data-qa="'button-' + action.content.name" :title="action.content.text">
-                          <span class="btn_attachment_text overflow_ellipsis">{{action.content.name}}</span>
-                        </button>
-                        <button class="btn btn_attachment" data-action-id="2" data-qa="button-game" title="Falken's Maze">
-                          <span class="btn_attachment_text overflow_ellipsis">Falken's Maze</span>
-                        </button>
-                        <button class="btn btn_attachment btn_danger" data-action-id="3" data-qa="button-game" title="Thermonuclear War">
-                          <span class="btn_attachment_text overflow_ellipsis">Thermonuclear War</span>
+                        <button :class="'btn btn_attachment btn_' + action.content.style" v-for="(action, index) in attachment.content.actions" :key="'attachment' + attachment.id + 'button' + action.id" v-if="action.content.type === 'button' && action.content.text.length" :data-action-id="index" :data-qa="'button-' + action.content.name" :title="action.content.text">
+                          <span class="btn_attachment_text overflow_ellipsis">{{action.content.text}}</span>
                         </button>
                       </span>
                     </div>
                   </div>
                 </div>
+                <!-- ===================
+                ====  THUMBNAIL
+                ==================== -->
+                <div v-if="attachment.content.thumb_url.length && !attachment.content.image_url.length" class="msg_inline_attachment_column column_thumb">
+                  <div class="msg_inline_attachment_row">
+                    <a :href="attachment.content.title_link" target="_blank">
+                      <div class="msg_inline_attachment_thumb_holder" :style="'background-image: url('  + attachment.content.thumb_url + ');'">
+                        <img class="msg_inline_attachment_thumb" :src="attachment.content.thumb_url" alt="">
+                      </div>
+                    </a>
+                  </div>
+                </div>
                 <!-- TODO: Delete attachment on click -->
-                <div class="delete_attachment_link" data-attachment-id="1">
+                <div v-else class="delete_attachment_link" data-attachment-id="1">
                   <div class="ts-icon ts_icon_times_small"></div>
                 </div>
               </div>
@@ -135,8 +171,10 @@
 import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
 export default {
   name: "MsgPreview",
-  data: {
-    field_short_ind: 0
+  data() {
+    return {
+      field_short_ind: 0
+    }
   },
   computed: {
     ...mapGetters("msgPreview", {
@@ -690,6 +728,9 @@ table tr {
 .msg_inline_attachment_column.column_content {
   width: 100%;
 }
+.has_thumb .msg_inline_attachment_column.column_content {
+  width: calc(100% - 72px);
+}
 .msg_inline_attachment_row {
   box-sizing: context-box;
   width: 100%;
@@ -766,6 +807,15 @@ table tr {
   color: inherit;
   font-weight: inherit;
 }
+
+.attachment_group .attachment_source_icon a {
+  display: inline-block;
+  border-radius: 2px;
+  margin-right: 0.4rem;
+  height: 16px;
+  width: 16px;
+}
+
 .attachment_group .attachment_footer_icon img {
   width: 16px;
   height: 16px;
@@ -914,5 +964,449 @@ table tr {
       format("woff");
   font-style: normal;
   font-weight: 400;
+}
+
+/* =================
+**  IMAGE
+** ===============*/
+/*! CSS Used from: https://a.slack-edge.com/c36e0/style/rollup-api_site.css */
+.clear_both {
+  clear: both;
+}
+* {
+  -ms-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+img {
+  height: auto;
+  vertical-align: middle;
+  border: 0;
+}
+a,
+a:link,
+a:visited {
+  color: #0576b9;
+  text-decoration: none;
+}
+.no_touch a:hover {
+  text-decoration: underline;
+}
+a:active {
+  color: #0576b9;
+}
+::-webkit-input-placeholder {
+  color: #919193;
+}
+:-moz-placeholder {
+  color: #919193;
+}
+::-moz-placeholder {
+  color: #919193;
+}
+:-ms-input-placeholder {
+  color: #919193;
+}
+a:focus {
+  outline: 0;
+}
+img {
+  max-width: 100%;
+}
+.api_doc img {
+  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+}
+.page_formatting #msgs_div img {
+  border: 0;
+}
+/*! CSS Used from: https://a.slack-edge.com/47ff3/style/rollup-api_docs.css */
+.msg_inline_img {
+  -ms-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  display: block;
+}
+.msg_inline_img {
+  overflow: hidden;
+  background: #fff;
+}
+.msg_inline_img_holder {
+  max-width: 100%;
+  padding-bottom: 8px;
+}
+.msg_inline_img_holder .msg_inline_img_container {
+  position: relative;
+  max-width: 400px;
+}
+.msg_inline_img_holder .msg_inline_img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 0 1px #ddd;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: cover;
+}
+.msg_inline_img_holder .msg_inline_img img {
+  display: block;
+  opacity: 0;
+}
+.msg_inline_img_holder.file_container_fixed_dimensions {
+  display: inline-block;
+}
+.msg_inline_img_holder.file_container_fixed_dimensions a {
+  display: inline;
+}
+.msg_inline_img_holder.file_container_fixed_dimensions .msg_inline_img {
+  position: relative;
+  background: 0 0 !important;
+}
+.msg_inline_img_holder.file_container_fixed_dimensions .msg_inline_img img {
+  opacity: 1;
+  max-width: 100%;
+}
+.msg_inline_img_holder.msg_inline_holder_rounded .msg_inline_img {
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.msg_inline_img_holder.msg_inline_holder_rounded .msg_inline_img img {
+  border-radius: 3px;
+}
+ts-message .msg_inline_holder {
+  margin-top: 0.4rem;
+}
+.msg_inline_attachment_row {
+  box-sizing: context-box;
+  width: 100%;
+  padding: 0 12px;
+  margin: 12px 0;
+}
+.msg_inline_attachment_row.attachment_flush_text
+  + .msg_inline_attachment_row:not(.attachment_flush_text) {
+  margin-top: 9px;
+}
+.msg_inline_attachment_row.attachment_flush_text
+  + .msg_inline_attachment_row:not(.attachment_flush_text).attachment_media {
+  margin-top: 0;
+}
+.msg_inline_attachment_row.attachment_flush_text
+  + .msg_inline_attachment_row:not(.attachment_flush_text).attachment_media
+  .msg_inline_holder {
+  margin-top: 9px;
+}
+.msg_inline_attachment_row .msg_inline_holder {
+  border-radius: 3px;
+  overflow: hidden;
+}
+.msg_inline_attachment_row .msg_inline_holder img {
+  margin: 0;
+  width: auto;
+}
+.attachment_group .msg_inline_img_holder {
+  padding-bottom: 0;
+  font-size: 0;
+  line-height: 0;
+}
+.attachment_group .msg_inline_img_holder .msg_inline_img_container {
+  display: inline-block;
+  max-width: 100%;
+}
+.attachment_group .msg_inline_img_holder .msg_inline_img {
+  background-color: transparent;
+  box-shadow: none;
+}
+.attachment_group .msg_inline_img_holder .msg_inline_img img {
+  width: auto;
+  max-width: 100%;
+  max-height: 300px;
+}
+.attachment_group .msg_inline_img_holder.file_container_fixed_dimensions {
+  display: block;
+}
+.attachment_group
+  .msg_inline_img_holder.msg_inline_holder_rounded
+  .msg_inline_img,
+.attachment_group
+  .msg_inline_img_holder.msg_inline_holder_rounded
+  .msg_inline_img
+  img {
+  border-radius: 3px;
+}
+/*! CSS Used from: https://a.slack-edge.com/1c44/style/rollup-slack_kit_helpers.css */
+.clear_both {
+  clear: both;
+}
+
+/* ====================
+**  THUMBNAIL
+** ==================*/
+/*! CSS Used from: https://a.slack-edge.com/c36e0/style/rollup-api_site.css */
+* {
+  -ms-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+img {
+  height: auto;
+  vertical-align: middle;
+  border: 0;
+}
+a,
+a:link,
+a:visited {
+  color: #0576b9;
+  text-decoration: none;
+}
+.no_touch a:hover {
+  text-decoration: underline;
+}
+a:active {
+  color: #0576b9;
+}
+::-webkit-input-placeholder {
+  color: #919193;
+}
+:-moz-placeholder {
+  color: #919193;
+}
+::-moz-placeholder {
+  color: #919193;
+}
+:-ms-input-placeholder {
+  color: #919193;
+}
+a:focus {
+  outline: 0;
+}
+img {
+  max-width: 100%;
+}
+.api_doc img {
+  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+}
+.page_formatting #msgs_div img {
+  border: 0;
+}
+/*! CSS Used from: https://a.slack-edge.com/47ff3/style/rollup-api_docs.css */
+.msg_inline_attachment_thumb {
+  -ms-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  display: block;
+}
+.msg_inline_attachment_thumb {
+  border-radius: 0.25rem;
+}
+.msg_inline_attachment_thumb_holder {
+  margin: 0 0 0 1rem;
+  border: 0;
+  border-radius: 0.7rem;
+  float: right;
+}
+.msg_inline_attachment_column {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 15px;
+  line-height: 22px;
+}
+.msg_inline_attachment_column.column_thumb {
+  width: 72px;
+}
+.msg_inline_attachment_row {
+  box-sizing: context-box;
+  width: 100%;
+  padding: 0 12px;
+  margin: 12px 0;
+}
+.column_thumb .msg_inline_attachment_row {
+  padding-right: 0;
+}
+.msg_inline_attachment_row:first-of-type {
+  margin-top: 0;
+}
+.msg_inline_attachment_row:last-of-type {
+  margin-bottom: 0;
+}
+.attachment_group .msg_inline_attachment_thumb_holder {
+  margin: 0;
+  border-radius: 3px;
+  float: none;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 60px;
+  height: 60px;
+}
+.attachment_group .msg_inline_attachment_thumb {
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+}
+
+/* ===============
+** PRIMARY BUTTON
+** =============*/
+/*! CSS Used from: https://a.slack-edge.com/46689/style/rollup-slack_kit_legacy_adapters.css */
+button {
+  font-family: inherit;
+}
+/*! CSS Used from: https://a.slack-edge.com/c36e0/style/rollup-api_site.css */
+.overflow_ellipsis {
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+* {
+  -ms-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.btn {
+  background: #008952;
+  color: #fff;
+  transition: all 75ms ease-in-out;
+  line-height: 1.2rem;
+  font-weight: 900;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-decoration: none;
+  cursor: pointer;
+  text-shadow: none;
+  border: none;
+  border-radius: 0.25rem;
+  box-shadow: none;
+  position: relative;
+  display: inline-block;
+  vertical-align: bottom;
+  text-align: center;
+  white-space: nowrap;
+  margin: 0;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:after {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 0.25rem;
+}
+.no_touch .btn:focus,
+.no_touch .btn:hover {
+  outline: 0;
+  text-decoration: none;
+}
+.btn:focus,
+.btn:hover {
+  background: #008952;
+  box-shadow: 0 1px 4px rgba(44, 45, 48, 0.3);
+  color: #fff;
+  transition: all 75ms ease-in-out;
+}
+.btn:active {
+  background: #057f4e;
+  color: #fff;
+}
+.btn:disabled,
+.btn:disabled:active,
+.btn:disabled:hover {
+  background-color: #e8e8e8 !important;
+  color: rgba(44, 45, 48, 0.75);
+  box-shadow: none !important;
+  pointer-events: none;
+}
+.btn {
+  padding: 8px 14px 9px;
+  font-size: 15px;
+}
+.btn.btn_attachment {
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid rgba(145, 145, 147, 0.5);
+  color: #2c2d30;
+  max-width: 220px;
+  font-size: 13px;
+  font-weight: 700;
+  height: 30px;
+  padding: 0 10px;
+  margin: 0 8px 8px 0;
+}
+.btn.btn_attachment .btn_attachment_text {
+  pointer-events: none;
+}
+.btn.btn_attachment:focus,
+.btn.btn_attachment:hover {
+  border-color: #919193;
+}
+.btn.btn_attachment:focus::after,
+.btn.btn_attachment:hover::after {
+  box-shadow: none;
+}
+.btn.btn_attachment:active {
+  background-color: rgba(145, 145, 147, 0.05);
+  border-color: #919193;
+  box-shadow: inset 0 1px 1px 0 rgba(145, 145, 147, 0.2);
+}
+.btn.btn_attachment:active::after {
+  box-shadow: none !important;
+}
+.btn.btn_attachment.btn_primary {
+  background-color: transparent !important;
+  border-color: rgba(0, 137, 82, 0.5);
+  color: #008952;
+}
+.btn.btn_attachment.btn_primary:focus,
+.btn.btn_attachment.btn_primary:hover {
+  border-color: #008952;
+}
+.btn.btn_attachment.btn_primary:active {
+  background-color: rgba(0, 137, 82, 0.04) !important;
+  box-shadow: inset 0 1px 1px 0 rgba(0, 137, 82, 0.2);
+  border-color: #008952;
+}
+::-webkit-input-placeholder {
+  color: #919193;
+}
+:-moz-placeholder {
+  color: #919193;
+}
+::-moz-placeholder {
+  color: #919193;
+}
+:-ms-input-placeholder {
+  color: #919193;
+}
+button:focus {
+  outline: 0;
+}
+/*! CSS Used from: https://a.slack-edge.com/47ff3/style/rollup-api_docs.css */
+.attachment_group
+  .attachment_actions_interactions
+  .attachment_actions_interactions_inner_wrapper
+  > :last-child {
+  margin-right: 32px;
+}
+/*! CSS Used from: https://a.slack-edge.com/1c44/style/rollup-slack_kit_helpers.css */
+.overflow_ellipsis {
+  display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 </style>

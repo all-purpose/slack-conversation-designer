@@ -1,47 +1,64 @@
 <template>
-	<section id="c-msg-des-cont">
-		<h1 class="c-msg-des-title">Message Designer</h1>
-		<form id="c-msg-des-form">
-			<label>Text: <span class="c-msg-des-desc">Main message text.</span></label>
-			<input name="text" type="text" v-model="text" >
-			<fieldset class="c-radiogroup">
-        <legend><strong>Audience:</strong> Who will see the message</legend>
-        <label>In Channel</label>
-        <input name="response_type" value="in_channel" type="radio" v-model="response_type">
-        <label>Ephemeral</label>
-        <input name="response_pype" value="ephemeral" type="radio" v-model="response_type">
-      </fieldset>
+  <section id="c-msg-des-cont">
+    <h1 class="title is-1">Message Designer</h1>
+    <form id="c-msg-des-form">
+      <b-field label="Text">
+        <b-input v-model="text" placeholder="Main message text"></b-input>
+      </b-field>
+      <div class="block">
+        <label class="ui label">
+          Audience
+        </label>
+        <b-radio v-model="response_type" native-value="in_channel">
+          Entire Channel
+        </b-radio>
+        <b-radio v-model="response_type" native-value="ephemeral">
+          Recipient
+        </b-radio>
+      </div>
       <!--====================
       ====  Attachments   ====
       =====================-->
-      <h1>Attachments</h1>
-      <Collapsible accordion>
-        <CollapsibleItem v-for="(attach, index) in message.attachments" :key="attach.id" :ref="'attachAI' + index" is-opened>
-          <h4 slot="header">Attachment {{index + 1}}</h4>
-          <MsgAttachment 
-            :data="passAttach(attach.id)"
-            v-on:upd-attach="updateAttach($event)"/>
-        </CollapsibleItem>
-      </Collapsible>
-      <button type="button" @click="newAttachment">Add Attachment</button>
+      <h2 class="title is-2">Attachments</h2>
+      <b-collapse class="card" v-for="(attach, index) in message.attachments" :key="'attachment' + attach.id">
+        <div slot="trigger" slot-scope="props" class="card-header">
+          <p class="card-header-title">
+            Attachment {{index + 1}}
+          </p>
+          <a class="card-header-icon">
+            <b-icon :icon="props.open ? 'menu-down' : 'menu-up'">
+            </b-icon>
+          </a>
+        </div>
+        <div class="card-content">
+          <div class="content">
+            <MsgAttachment :attachData="passAttach(attach.id)" v-on:upd-attach="updateAttach($event)" />
+          </div>
+        </div>
+        <footer class="card-footer">
+          <a class="card-footer-item">Delete</a>
+        </footer>
+      </b-collapse>
+      <button class="button" type="button" @click="newAttachment">Add Attachment</button>
       <!--====================
       ====    Toggles     ====
       =====================-->
-			<label>Replace Original Message<!--<TooltipIcon ttContent="Used only when creating messages in response to a button action invocation. When set to true, the inciting message will be replaced by this message you're providing. When false, the message you're providing is considered a brand new message."/>--></label>
-			<input name="replace_original" type="checkbox" v-model="replace_original" />
-			<label>Delete Original Message<!--<TooltipIcon ttContent="Used only when creating messages in response to a button action invocation. When set to true, the inciting message will be deleted and if a message is provided, it will be posted as a brand new message."/>--></label>
-			<input name="delete_original" type="checkbox" v-model="delete_original" />
+      <label>Replace Original Message
+        <!--<TooltipIcon ttContent="Used only when creating messages in response to a button action invocation. When set to true, the inciting message will be replaced by this message you're providing. When false, the message you're providing is considered a brand new message."/>-->
+      </label>
+      <input name="replace_original" type="checkbox" v-model="replace_original" />
+      <label>Delete Original Message
+        <!--<TooltipIcon ttContent="Used only when creating messages in response to a button action invocation. When set to true, the inciting message will be deleted and if a message is provided, it will be posted as a brand new message."/>-->
+      </label>
+      <input name="delete_original" type="checkbox" v-model="delete_original" />
       <div>
         <button type="button" @click="newMessage" :disabled="isNew && !isChanged">New Message</button>
-        <button 
-          type="button"
-          @click="$emit('save-msg', message)"
-          :disabled="!isChanged">Save Message</button>
+        <button type="button" @click="$emit('save-msg', message)" :disabled="!isChanged">Save Message</button>
       </div>
-		</form>
+    </form>
     <!-- <h1 class="c-msd-des-title">JSON Data:</h1>
     <pre>{{ JSON.stringify(prettyJson, null, 4) }}</pre> -->
-	</section>
+  </section>
 </template>
 
 <script>
@@ -96,9 +113,8 @@ export default {
     })
   },
   components: { 
-    MsgAttachment,
-    Collapsible: require("vue-collapsible/collapsible"),
-    CollapsibleItem: require("vue-collapsible/collapsible-item")}
+    MsgAttachment
+  }
 };
 </script>
 
@@ -106,23 +122,6 @@ export default {
 form {
   margin: 0 auto;
   max-width: 33rem;
-
-  > * {
-    display: block;
-  }
-
-  label {
-    text-align: left;
-    font-weight: 700;
-  }
-
-  input {
-    margin-bottom: 1em;
-
-    &[type="text"] {
-      width: 25rem;
-    }
-  }
 }
 
 .c-msg-des-desc {
@@ -141,9 +140,9 @@ form {
     background: #aeaeae;
     color: white;
     border-radius: 0.2rem;
-    
+
     &::after {
-      content: '+';
+      content: "+";
       float: right;
       font-weight: 700;
       color: white;
@@ -194,7 +193,8 @@ pre {
     }
   }
 
-  label, input[type="radio"] {
+  label,
+  input[type="radio"] {
     display: inline-block;
   }
 

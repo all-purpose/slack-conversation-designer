@@ -1,110 +1,113 @@
 <template>
 	<div class="c-msg-attach-cont">
-		<label>Fallback:
-			<span class="c-msg-des-desc">A message displayed when attachments aren't supported.</span>
-		</label>
-		<input name="fallback" type="text" v-model="fallback" @input="$emit('upd-attach',localAttachment)">
-		<label>Callback ID:
-			<span class="c-msg-des-desc">Unique identifier for message buttons.</span>
-		</label>
-		<input name="callback_id" type="text" v-model="callback_id" @input="$emit('upd-attach',localAttachment)">
-		<label>Pretext:
-			<span class="c-msg-des-desc">text appearing before attachment.</span>
-		</label>
-		<input name="pretext" type="text" v-model="pretext" @input="$emit('upd-attach',localAttachment)">
-		<label>Text:
-			<span class="c-msg-des-desc">text content of the attachment itself.</span>
-		</label>
-		<input name="text" type="text" v-model="text" @input="$emit('upd-attach',localAttachment)">
-		<label>Color:
-			<span class="c-msg-des-desc">Color of the attachments left-side vertical bar.</span>
-		</label>
-		<input name="color" type="color" v-model="color" @input="$emit('upd-attach',localAttachment)">
-		<Collapsible>
-			<CollapsibleItem>
-				<h4 slot="header">Author</h4>
-				<div class="long">
-					<label>Name:
-						<span class="c-msg-des-desc">Who / where did this message come from?.</span>
-					</label>
-					<input name="author_name" type="text" v-model="author_name" @input="$emit('upd-attach',localAttachment)">
-				</div>
-				<div class="short">
-					<label>Link:
-						<span class="c-msg-des-desc">Link to more info about the author.</span>
-					</label>
-					<input name="author_link" type="url" v-model="author_link" @input="$emit('upd-attach',localAttachment)">
-				</div>
-				<div class="short">
-					<label>Icon:
-						<span class="c-msg-des-desc">URL of an icon you want to use from the web.</span>
-					</label>
-					<input name="author_icon" type="url" v-model="author_icon" @input="$emit('upd-attach',localAttachment)">
-				</div>
-			</CollapsibleItem>
-			<CollapsibleItem>
-				<h4 slot="header">Title</h4>
-				<div class="long">
-					<label>Title:
-						<span class="c-msg-des-desc">A visual header for the attachment.</span>
-					</label>
-					<input name="title" type="text" v-model="title" @input="$emit('upd-attach',localAttachment)">
-				</div>
-				<div class="long">
-					<label>Title Link:
-						<span class="c-msg-des-desc">URL the title takes you to on click.</span>
-					</label>
-					<input name="title_link" type="url" v-model="title_link" @input="$emit('upd-attach',localAttachment)">
-				</div>
-			</CollapsibleItem>
-			<CollapsibleItem>
-				<h4 slot="header">Images</h4>
-				<div class="long">
-					<label>Image URL:
-						<span class="c-msg-des-desc">URL to an image that will span the full width of the message.</span>
-					</label>
-					<input name="image_url" type="url" v-model="image_url" @input="$emit('upd-attach',localAttachment)">
-				</div>
-				<div class="long">
-					<label>Thumbnail URL:
-						<span class="c-msg-des-desc">URL to an image used as a thumbnail on the right side of the message. Don't use this and Image URL.</span>
-					</label>
-					<input name="thumb_url" type="url" v-model="thumb_url" @input="$emit('upd-attach',localAttachment)">
-				</div>
-			</CollapsibleItem>
-			<CollapsibleItem>
-				<h4 slot="header">Footer</h4>
-				<div class="long">
-					<label>Footer:
-						<span class="c-msg-des-desc">Small text appearing above any buttons.</span>
-					</label>
-					<input name="footer" type="text" v-model="footer" @input="$emit('upd-attach',localAttachment)">
-				</div>
-				<div class="long">
-					<label>Footer Icon:
-						<span class="c-msg-des-desc">URL to an icon for the footer.</span>
-					</label>
-					<input name="footex_icon" type="url" v-model="footer_icon" @input="$emit('upd-attach',localAttachment)">
-				</div>
-			</CollapsibleItem>
-		</Collapsible>
-		<label>Timestamp:
-			<span class="c-msg-des-desc">Currently not implemented.</span>
-		</label>
-		<input name="ts" type="datetime-local" v-model="ts" @input="$emit('upd-attach',localAttachment)">
+		<b-field label="Fallback">
+			<b-input placeholder="Shown when attachments aren't supported" v-model="localAttach.content.fallback" @input="$emit('upd-attach',localAttach)"></b-input>
+		</b-field>
+		<b-field label="Callback ID">
+			<b-input placeholder="Unique identifier for attachment actions" v-model="localAttach.content.callback_id" @input="$emit('upd-attach',localAttach)"></b-input>
+		</b-field>
+		<b-field label="Pretext">
+			<b-input placeholder="Shown above the attachment" v-model="localAttach.content.pretext" @input="$emit('upd-attach',localAttach)"></b-input>
+		</b-field>
+		<b-field label="Text">
+			<b-input placeholder="Text appearing within the attachment" v-model="localAttach.content.text" @input="$emit('upd-attach',localAttach)"></b-input>
+		</b-field>
+		<b-field label="Color">
+			<b-input type="color" v-model="localAttach.content.color" @input="$emit('upd-attach',localAttach)"></b-input>
+		</b-field>
+		<b-collapse class="panel" :open="false">
+			<div slot="trigger" class="panel-heading">
+				<strong>Source</strong>
+			</div>
+			<div class="panel-block">
+				<b-field label="Name">
+					<b-input placeholder="Who what is the source?" expanded v-model="localAttach.content.author_name" @input="$emit('upd-attach',localAttach)"></b-input>
+				</b-field>
+				<b-field grouped>
+					<b-field label="Link" expanded>
+						<b-input placeholder="URL to more info" type="url" v-model="localAttach.content.author_link" @input="$emit('upd-attach',localAttach)"></b-input>
+					</b-field>
+					<b-field label="Icon" expanded>
+						<b-input placeholder="URL for source icon" type="url" v-model="localAttach.content.author_icon" @input="$emit('upd-attach',localAttach)"></b-input>
+					</b-field>
+				</b-field>
+			</div>
+		</b-collapse>
+		<b-collapse class="panel" :open="false">
+			<div slot="trigger" class="panel-heading">
+				<strong>Title</strong>
+			</div>
+			<div class="panel-block">
+				<b-field label="Title">
+					<b-input placeholder="A title for the attachment" v-model="localAttach.content.title" @input="$emit('upd-attach',localAttach)"></b-input>
+				</b-field>
+				<b-field label="Title Link">
+					<b-input placeholder="URL the title takes you to" type="url" v-model="localAttach.content.title_link" @input="$emit('upd-attach',localAttach)"></b-input>
+				</b-field>
+			</div>
+		</b-collapse>
+		<b-collapse class="panel" :open="false">
+			<div slot="trigger" class="panel-heading">
+				<strong>Images</strong>
+			</div>
+			<div class="panel-block">
+				<b-field label="Image URL:">
+					<b-input placeholder="URL of large inage" type="url" v-model="localAttach.content.image_url" @input="$emit('upd-attach',localAttach)"></b-input>
+				</b-field>
+				<b-field label="Thumbnail URL">
+					<b-input placeholder="URL for right side thumbnail" type="url" v-model="localAttach.content.thumb_url" @input="$emit('upd-attach',localAttach)"></b-input>
+				</b-field>
+			</div>
+		</b-collapse>
+		<b-collapse class="panel" :open="false">
+			<div slot="trigger" class="panel-heading">
+				<strong>Footer</strong>
+			</div>
+			<div class="panel-block">
+				<b-field label="Footer:">
+					<b-input placeholder="Sits just above actions" v-model="localAttach.content.footer" @input="$emit('upd-attach',localAttach)"></b-input>
+				</b-field>
+				<b-field label="Footer Icon">
+					<b-input placeholder="URL of an icon for the footer" type="url" v-model="localAttach.content.footer_icon" @input="$emit('upd-attach',localAttach)"></b-input>
+				</b-field>
+			</div>
+		</b-collapse>
+		<b-field label="Timestamp:">
+			<b-input placeholder="Currently not implemented" v-model="localAttach.content.ts" @input="$emit('upd-attach',localAttach)"></b-input>
+		</b-field>
 		<!--================
 		====  Actions   ====
 		=================-->
-		<h3 class="c-msg-action-header">Actions</h3>
-		<Collapsible accordion>
-			<CollapsibleItem v-for="(action, index) in localAttachment.content.actions" :key="action.id" :ref="'actAI' + index" is-opened>
-				<h4 slot="header">{{ action.content.text }} Button</h4>
-				<AttachmentButton :data="passAction(action.id)" v-on:update_button="updateAction($event)" />
-			</CollapsibleItem>
-		</Collapsible>
-		<button type="button" class="c-msg-button" @click="newButton">Add Buttons</button>
-		<!-- TODO: Add conditional so this only shows up if there aren't buttons. -->
-		<button class="c-msg-button">Add Menu</button>
+		<h2 class="title is-2">Actions</h2>
+		<!-- <b-collapse class="card" v-for="(action, index) in localAttachData.content.actions" :key="'attachment action' + action.id" :open.sync="data.open"> -->
+		<b-collapse class="card" v-for="(action, index) in localAttachData.content.actions" :key="'attachment action' + action.id" :open="false">
+			<div slot="trigger" slot-scope="props" class="card-header">
+				<p class="card-header-title">
+					{{ action.content.text }} Button
+				</p>
+				<a class="card-header-icon">
+					<b-icon :icon="props.open ? 'menu-down' : 'menu-up'">
+					</b-icon>
+				</a>
+			</div>
+			<div class="card-content">
+				<div class="content">
+					<AttachmentButton :btnData="passAction(action.id)" v-on:update-button="updateAction($event)" />
+				</div>
+			</div>
+			<footer class="card-footer">
+				<a class="card-footer-item">Delete</a>
+			</footer>
+		</b-collapse>
+		<div class="field is-grouped">
+			<p class="control">
+				<button class="button" type="button" @click="newButton">Add Buttons</button>
+			</p>
+			<!-- TODO: Add conditional so this only shows up if there aren't buttons. -->
+			<p class="control">
+				<button class="button" type="button">Add Menu</button>
+			</p>
+		</div>
 	</div>
 </template>
 
@@ -115,25 +118,65 @@ import AttachmentButton from "./AttachmentButton"
 
 export default {
   name: "MsgAttachment",
-	props: ['data'],
+	props: ['attachData'],
+	data() {
+		return {
+			localAttach: {
+				id: 0,
+				content: {
+					fallback: '',
+					color: '#000000',
+					callback_id: '',
+					pretext: '',
+					author_name: '',
+					author_link: '',
+					author_icon: '',
+					title: '',
+					title_link: '',
+					text: '',
+					fields: [],
+					image_url: '',
+					thumb_url: '',
+					footer: '',
+					footer_icon: '',
+					ts: '',
+					actions: []
+				}
+			}
+		}
+	},
+	created: function () {
+		this.localAttach = this.attachData
+	},
   computed: {
-    ...mapState({}),
+    ...mapState("msgAttachment", {
+			localAttachData: state => state.attachment
+		}),
     ...mapGetters("msgAttachment", {
-			localAttachment: "localAttach",
+			// localAttachData: "localAttach",
 			passAction: "getActionByID"
 			// ind: "localAttachInd"
-    }),
-    ...mapFields('msgAttachment', [
-      "attachment.content.title",
-			"attachment.content.fallback",
-      "attachment.content.callback_id",
-			"attachment.content.pretext",
-			"attachment.content.text",
-			"attachment.content.color"
-    ])
+    })//,
+    // ...mapFields('msgAttachment', [
+		// 	"attachment.content.fallback",
+    //   "attachment.content.callback_id",
+		// 	"attachment.content.pretext",
+		// 	"attachment.content.author_name",
+		// 	"attachment.content.author_link",
+		// 	"attachment.content.author_icon",
+		// 	"attachment.content.title",
+		// 	"attachment.content.title_link",
+		// 	"attachment.content.text",
+		// 	"attachment.content.image_url",
+		// 	"attachment.content.thumb_url",
+		// 	"attachment.content.footer",
+		// 	"attachment.content.footer_icon",
+		// 	"attachment.content.ts",
+		// 	"attachment.content.color"
+    // ])
   },
 	created: function () {
-		this.loadAttachment(this.data)
+		this.loadAttachment(this.attachData)
 	},
 	methods: {
 		...mapMutations("msgAttachment", {
@@ -147,13 +190,11 @@ export default {
 		}),
 		updateAction: function (event) {
 			this.saveAction(event)
-			this.$emit('upd-attach', this.localAttachment)
+			this.$emit('upd-attach', this.localAttachData)
 		}
 	},
   components: {
-    AttachmentButton,
-		Collapsible: require("vue-collapsible/collapsible"),
-    CollapsibleItem: require("vue-collapsible/collapsible-item")
+    AttachmentButton
 	}
 };
 </script>
@@ -174,64 +215,64 @@ fieldset {
 }
 
 .c-msg-attach-cont {
-  background-color: #aaddef;
-  border: none;
-  margin: 0;
-  padding: 0.5em;
+  // background-color: #aaddef;
+  // border: none;
+  // margin: 0;
+  // padding: 0.5em;
 
-  @supports (display: grid) {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    grid-column-gap: 1rem;
-  }
+  // @supports (display: grid) {
+  //   display: grid;
+  //   grid-template-rows: 1fr 1fr;
+  //   grid-column-gap: 1rem;
+  // }
 
-  h3 {
-    margin-bottom: 0.5em;
-    border-bottom: 0.1em solid #999999;
-  }
+  // h3 {
+  //   margin-bottom: 0.5em;
+  //   border-bottom: 0.1em solid #999999;
+  // }
 
-  .long,
-  .short {
-    display: inline-flex;
-    flex-flow: column nowrap;
+  // .long,
+  // .short {
+  //   display: inline-flex;
+  //   flex-flow: column nowrap;
 
-    label {
-      margin: 0;
-    }
+  //   label {
+  //     margin: 0;
+  //   }
 
-    input[type="text"] {
-      margin: 0.1rem 0 1rem 0;
-    }
-  }
+  //   input[type="text"] {
+  //     margin: 0.1rem 0 1rem 0;
+  //   }
+  // }
 
-  .long {
-    width: 100%;
-  }
+  // .long {
+  //   width: 100%;
+  // }
 
-  .short {
-    width: 49%;
-    padding: 0 0.5rem;
-    @supports (display: grid) {
-      grid-column-start: span 1;
-      padding: auto;
-      width: auto;
-    }
+  // .short {
+  //   width: 49%;
+  //   padding: 0 0.5rem;
+  //   // @supports (display: grid) {
+  //   //   grid-column-start: span 1;
+  //   //   padding: auto;
+  //   //   width: auto;
+  //   // }
 
-    &:last-of-type {
-      padding-right: 0;
-    }
+  //   &:last-of-type {
+  //     padding-right: 0;
+  //   }
 
-    &:first-of-type {
-      padding-left: 0;
-    }
-  }
+  //   &:first-of-type {
+  //     padding-left: 0;
+  //   }
+  // }
 
-  > * {
-    width: 100%;
-    display: inline-block;
-    text-align: left;
-    grid-column-start: span 2;
-  }
+  // > * {
+  //   width: 100%;
+  //   display: inline-block;
+  //   text-align: left;
+  //   grid-column-start: span 2;
+  // }
 
   label {
     margin: 1rem 0 0.1rem 0;

@@ -1,5 +1,4 @@
 import { getField, updateField } from 'vuex-map-fields'
-// import attachmentButton from './attachmentButton'
 
 // Initial State
 const state = {
@@ -73,7 +72,9 @@ const mutations = {
   saveActionByID (state, action) {
     let actions = state.attachment.content.actions
     let index = actions.findIndex(act => act.id === action.id)
-    actions[ index ] = action
+    // actions[ index ] = action
+    // this.$set()
+    actions[ index ] = { ...actions[ index ], ...action }
   },
 
   incNextActionID (state) {
@@ -104,6 +105,5 @@ export default {
   state,
   getters,
   actions,
-  mutations//, 
-  // modules
+  mutations
 }

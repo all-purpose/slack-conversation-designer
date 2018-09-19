@@ -1,21 +1,25 @@
 <template>
-	<fieldset class="c-msg-button-cont">
-		<!-- <legend class="c-msg-button-title">{{ name }} Button</legend> -->
-		<label>Name: <span class="c-msg-des-desc">Shared name of the group of buttons</span></label>
-		<input name="name" type="text" v-model="name" @input="$emit('update_button', buttonData)">
-		<label>Text: <span class="c-msg-des-desc">Text displayed on the button.</span></label>
-		<input name="text" type="text" v-model="text" @input="$emit('update_button', buttonData)">
-		<label>Value: <span class="c-msg-des-desc">The value the code sees.</span></label>
-		<input name="value" type="text" v-model="value" @input="$emit('update_button', buttonData)">
-		<label>Style: <span class="c-msg-des-desc">How the button looks.</span></label>
-		<select v-model="style" @input="$emit('update_button', buttonData)">
-			<option value="default">Default</option>
-			<option value="primary">Primary</option>
-			<option value="danger">Danger</option>
-		</select>
-		<label>Confirm: <span class="c-msg-des-desc">Show a confirmation dialog when this button is pressed.</span></label>
-		<input name="confirm" type="checkbox" @input="$emit('update_button', buttonData)">
-	</fieldset>
+	<div class="c-msg-button-cont">
+		<b-field label="Name:">
+			<b-input placeholder="Shared name of the group of buttons" v-model="localButton.content.name" @input="$emit('upd-btn', localButton)"></b-input>
+		</b-field>
+		<b-field label="Text:">
+			<b-input placeholder="The button label" v-model="localButton.content.text" @input="$emit('upd-btn', localButton)"></b-input>
+		</b-field>
+		<b-field label="Value:">
+			<b-input placeholder="The value the code uses" v-model="localButton.content.value" @input="$emit('upd-btn', localButton)"></b-input>
+		</b-field>
+		<b-field label="Style">
+			<b-select placeholder="Button Color" v-model="localButton.content.style" @input="$emit('upd-btn', localButton)" required>
+				<option value="default">Default</option>
+				<option value="primary">Primary</option>
+				<option value="danger">Danger</option>
+			</b-select>
+		</b-field>
+		<b-field label="Require Confirmatiom?">
+			<b-switch v-model="isSwitchedCustom" true-value="Yes" false-value="No" @input="$emit('update-btn',  localButton)">{{isSwitchedCustom}}</b-switch>
+		</b-field>
+	</div>
 </template>
 
 <script>
@@ -25,26 +29,32 @@ import { mapFields } from "vuex-map-fields"
 
 export default {
   name: "AttachmentButton",
-	props: ['data'],
+	props: ['btnData'],
+	data() {
+		return {
+			isSwitchedCustom: 'Yes',
+			localButton: {
+				id: 0,
+				content: {
+					name: '',
+					text: '',
+					type: 'button',
+					value: '',
+					style: ''
+				}
+			}
+		}
+	},
 	created: function () {
-		this.loadButton(this.data)
+		this.localButton = this.btnData
+		// this.loadButton(this.btnData)
 	},
   computed: {
-    ...mapState({}),
-    ...mapGetters("attachmentButton", {
-			buttonData: "localButton"
+    ...mapState("attachmentButton", {
+			btn: state => state.button
 		}),
-    ...mapFields('attachmentButton', [
-      "button.content.name",
-			"button.content.text",
-			"button.content.type",
-			"button.content.value",
-			"button.content.style"
-    ])
+    ...mapGetters("attachmentButton", {})
   },
-  // components: {
-  //   ButtonConfirm
-  // },
 	methods: {
 		...mapMutations("attachmentButton", {
       loadButton: "loadButton"
@@ -56,17 +66,17 @@ export default {
 
 <style scoped lang="scss">
 fieldset {
-	legend {
-		text-align: left;
-		font-weight: 500;
-		padding: 0 0.5rem;
-	}
+  legend {
+    text-align: left;
+    font-weight: 500;
+    padding: 0 0.5rem;
+  }
 }
 
 .c-msg-button-cont {
-	border: none;
-	background-color: #ddeeff;
-	margin: 0;
+  border: none;
+  // background-color: #ddeeff;
+  margin: 0;
 
   > * {
     display: block;
@@ -75,26 +85,26 @@ fieldset {
 
   > label {
     margin: 1rem 0 0.1rem 0;
-		font-weight: 500;
-		color: #333333;
+    font-weight: 500;
+    color: #333333;
   }
 
-	.c-msg-des-desc {
-		font-weight: 400;
-		font-style: italic;
-		color: #666;
-	}
+  .c-msg-des-desc {
+    font-weight: 400;
+    font-style: italic;
+    color: #666;
+  }
 }
 
 /*  Accordion */
 .collapsible {
   list-style: none;
   padding: 0;
-	margin: 0 0 1rem 0;
+  margin: 0 0 1rem 0;
 }
 
 .collapsible-header h4 {
-	text-align: center;
+  text-align: center;
   border-top: 1px solid #333;
   border-bottom: 1px solid #333;
   border-left: none;

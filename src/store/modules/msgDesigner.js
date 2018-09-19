@@ -134,7 +134,8 @@ const mutations = {
   saveAttachByID (state, attachment) {
     let attachments = state.curMessage.content.attachments
     let index = attachments.findIndex(attach => attach.id === attachment.id)
-    attachments[ index ] = attachment
+    // attachments[ index ] = attachment
+    attachments[ index ] = { ...attachments[ index ], ...attachment }
   },
 
   incNextAttachID (state) {
@@ -179,6 +180,5 @@ export default {
   state,
   getters,
   actions,
-  mutations//, 
-  // modules
+  mutations
 }

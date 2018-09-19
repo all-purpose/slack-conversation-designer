@@ -33,7 +33,7 @@ const getters = {
  ********************/
 const mutations = {
   updateField,
-  loadButton(state, button) {
+  loadButton (state, button) {
     state.button = button
   }
 }

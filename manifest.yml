@@ -1,0 +1,10 @@
+applications:
+- name: slack-conversation-designer
+  disk_quota: 1G
+  instances: 1
+  memory: 128M
+  buildpack: staticfile_buildpack
+  path: dist/
+  routes:
+  - route: slack-conversation-designer.w3ibm.mybluemix.net
+  stack: cflinuxfs2

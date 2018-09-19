@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "parcel index.html",
-    "build": "parcel build index.html"
+    "build": "parcel build index.html",
+    "start": "parcel build index.html"
   },
   "keywords": [],
   "author": "",
@@ -24,9 +25,10 @@
     "vuex-router-sync": "^5.0.0"
   },
   "dependencies": {
+    "buefy": "^0.6.7",
     "standard": "^12.0.1",
     "v-tooltip": "^2.0.0-rc.33",
-    "vue-collapsible": "https://github.com/madebydavid/vue-collapsible.git#fix\/class-property",
+    "vue-collapsible": "https://github.com/madebydavid/vue-collapsible.git#fix/class-property",
     "vue-hot-reload-api": "^2.3.0",
     "vuex-map-fields": "^1.3.0"
   }
