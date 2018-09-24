@@ -1,4 +1,5 @@
 import { getField, updateField } from 'vuex-map-fields'
+// import Vue from 'vue'
 
 // Initial State
 const state = {
@@ -73,8 +74,10 @@ const mutations = {
     let actions = state.attachment.content.actions
     let index = actions.findIndex(act => act.id === action.id)
     // actions[ index ] = action
+    this._vm.$set(state.attachment.content.actions, index, action)
     // this.$set()
-    actions[ index ] = { ...actions[ index ], ...action }
+    // actions[ index ] = { ...actions[ index ], ...action }
+    // Vue.set(attachment.content.actions[ index ])
   },
 
   incNextActionID (state) {

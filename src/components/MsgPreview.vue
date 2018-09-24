@@ -177,6 +177,9 @@ export default {
     }
   },
   computed: {
+    ...mapState('msgDesigner', {
+      // message: state => state.curMessage
+    }),
     ...mapGetters("msgPreview", {
       message: "getMessage"
     })

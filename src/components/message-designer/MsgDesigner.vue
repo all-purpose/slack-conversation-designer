@@ -110,7 +110,14 @@ export default {
     }),
     ...mapActions({
       newMessage: "newMessage"
-    })
+    }),
+    // updateAttach: function(event) {
+    //   console.log(this.$store.state)
+    //   // let attachments = this.localAttach.content.actions
+		// 	// let index = actions.findIndex(action => action.id === event.id)
+    //   // this.$set(this.localAttach.content.actions, index, event)
+    //   // this.$emit('upd-attach', this.localAttachData)
+    // }
   },
   components: { 
     MsgAttachment

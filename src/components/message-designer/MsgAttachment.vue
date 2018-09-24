@@ -80,7 +80,7 @@
 		=================-->
 		<h2 class="title is-2">Actions</h2>
 		<!-- <b-collapse class="card" v-for="(action, index) in localAttachData.content.actions" :key="'attachment action' + action.id" :open.sync="data.open"> -->
-		<b-collapse class="card" v-for="(action, index) in localAttachData.content.actions" :key="'attachment action' + action.id" :open="false">
+		<b-collapse class="card" v-for="action in localAttachData.content.actions" :key="'attachment action' + action.id" :open="true">
 			<div slot="trigger" slot-scope="props" class="card-header">
 				<p class="card-header-title">
 					{{ action.content.text }} Button
@@ -92,7 +92,7 @@
 			</div>
 			<div class="card-content">
 				<div class="content">
-					<AttachmentButton :btnData="passAction(action.id)" v-on:update-button="updateAction($event)" />
+					<AttachmentButton :btnData="passAction(action.id)" v-on:upd-btn="saveAction($event)" />
 				</div>
 			</div>
 			<footer class="card-footer">
@@ -112,6 +112,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
 import { mapFields } from "vuex-map-fields"
 import AttachmentButton from "./AttachmentButton"
@@ -147,6 +148,7 @@ export default {
 	},
 	created: function () {
 		this.localAttach = this.attachData
+		// this.loadAttachment(this.attachData)
 	},
   computed: {
     ...mapState("msgAttachment", {
@@ -156,41 +158,24 @@ export default {
 			// localAttachData: "localAttach",
 			passAction: "getActionByID"
 			// ind: "localAttachInd"
-    })//,
-    // ...mapFields('msgAttachment', [
-		// 	"attachment.content.fallback",
-    //   "attachment.content.callback_id",
-		// 	"attachment.content.pretext",
-		// 	"attachment.content.author_name",
-		// 	"attachment.content.author_link",
-		// 	"attachment.content.author_icon",
-		// 	"attachment.content.title",
-		// 	"attachment.content.title_link",
-		// 	"attachment.content.text",
-		// 	"attachment.content.image_url",
-		// 	"attachment.content.thumb_url",
-		// 	"attachment.content.footer",
-		// 	"attachment.content.footer_icon",
-		// 	"attachment.content.ts",
-		// 	"attachment.content.color"
-    // ])
+    })
   },
-	created: function () {
-		this.loadAttachment(this.attachData)
-	},
 	methods: {
 		...mapMutations("msgAttachment", {
       // newButton: "initButton",
 			updateID: "setAttachID",
-			saveAction: "saveActionByID",
+			// saveAction: "saveActionByID",
 			loadAttachment: "loadAttachment"
     }),
     ...mapActions("msgAttachment", {
 			newButton: "newButton"
 		}),
-		updateAction: function (event) {
-			this.saveAction(event)
-			this.$emit('upd-attach', this.localAttachData)
+		// Does this work???
+		saveAction: function (event) {
+			let actions = this.localAttach.content.actions
+			let index = actions.findIndex(action => action.id === event.id)
+			index = index >= 0 ? index : actions.length
+			this.$set(this.localAttach.content.actions, index, event)
 		}
 	},
   components: {

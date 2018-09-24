@@ -12,7 +12,8 @@
       "webRoot": "${workspaceFolder}",
       "smartStep": true,
       "sourceMaps": true,
-      "trace": true
+      "trace": true,
+      "port": 9222
     }
   ]
 }
